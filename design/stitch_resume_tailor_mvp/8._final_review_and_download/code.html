@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>ResumeSync | Final Review</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .resume-preview-shadow {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#464555",
+                        "tertiary-fixed": "#ffdbca",
+                        "on-secondary-fixed": "#171e00",
+                        "tertiary-fixed-dim": "#ffb690",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#783200",
+                        "primary-container": "#4f46e5",
+                        "on-secondary-container": "#566a00",
+                        "on-surface": "#0b1c30",
+                        "secondary-container": "#c6f000",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-surface": "#213145",
+                        "on-tertiary-container": "#ffd2bd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#dad7ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "outline": "#777587",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-low": "#eff4ff",
+                        "surface": "#f8f9ff",
+                        "secondary-fixed": "#c8f300",
+                        "tertiary": "#7b3300",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-primary": "#c3c0ff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#cbdbf5",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary-fixed-variant": "#3e4c00",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#0f0069",
+                        "surface-tint": "#4d44e3",
+                        "outline-variant": "#c7c4d8",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#a04500",
+                        "secondary": "#536600",
+                        "background": "#f8f9ff",
+                        "secondary-fixed-dim": "#afd500",
+                        "on-background": "#0b1c30",
+                        "primary": "#3525cd",
+                        "on-tertiary-fixed": "#341100"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface flex items-center justify-between px-margin-mobile h-16 w-full fixed top-0 z-50 shadow-sm">
+<button class="text-primary hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">ResumeSync</h1>
+<div class="w-10"></div> <!-- Spacer for centering -->
+</header>
+<main class="pt-24 px-margin-mobile max-w-md mx-auto">
+<!-- Header Section -->
+<section class="mb-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Final Review</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Your synchronized resume is ready for download. Review the AI-enhanced changes below.</p>
+</section>
+<!-- Changes Summary Card (Bento-style focus) -->
+<div class="glass-card rounded-xl p-6 mb-8 shadow-sm">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Optimization Summary</h3>
+</div>
+<ul class="space-y-4 mb-6">
+<li class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Updated Profile Summary</span>
+</li>
+<li class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Enhanced Skills Section</span>
+</li>
+<li class="flex items-start gap-3">
+<div class="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Added Keyword Optimization</span>
+</li>
+</ul>
+<div class="pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-md text-label-md text-on-surface-variant">Page count: 1 page (same as original)</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[16px] text-secondary">verified</span>
+<span class="font-label-md text-label-md text-secondary">ATS Ready</span>
+</div>
+</div>
+</div>
+<!-- Resume Mini-Preview -->
+<div class="mb-8 overflow-hidden rounded-xl resume-preview-shadow border border-outline-variant relative group">
+<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 pointer-events-none"></div>
+<div class="w-full aspect-[3/4] bg-cover bg-top" data-alt="A high-fidelity vertical resume preview on a clean white paper texture, featuring structured sections for education and work experience. The design is modern and minimalist with deep purple header accents and lime green bullet points. Soft professional lighting illuminates the crisp typography of a high-end corporate resume, creating a sense of reliability and success." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCbaw0cvXRS7qY0ycytwY0nWhBEKWwrAknb5J2hh_PXIb9nMh0UndnrnM-gOuZNgK61Y98gVhG6T866P7IGQJxL7mE0xEqodW4OMPuQRidEz-OQ-AUnxMYEepA06hxEkLvnTYKMRXYt6dDhaxAzhp-kyycgUSwKYBliXGXbDi2YQcn5B8LPkkaIRM9dhY4KLkEQ7XBvxfuTtMhtC62r2rT3iFuArZtHQXfU1QQbMyKMSN6P9RRkMW1zg7s6XFpY_qfT_WnRyTcbyQE')"></div>
+<div class="absolute bottom-4 left-4 right-4 z-20">
+<button class="w-full py-3 bg-surface/90 backdrop-blur-md rounded-lg font-label-md text-label-md text-primary flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+                    Preview Full Document
+                </button>
+</div>
+</div>
+<!-- AI Match Score -->
+<div class="bg-surface-container-low rounded-xl p-4 mb-8 flex items-center gap-4">
+<div class="relative w-16 h-16">
+<svg class="w-full h-full transform -rotate-90">
+<circle class="text-outline-variant" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="6"></circle>
+<circle class="text-secondary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="175.9" stroke-dashoffset="17.5" stroke-width="6"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="font-headline-md text-[16px] text-on-surface">90%</span>
+</div>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Match Score</h4>
+<p class="font-body-md text-body-md text-on-surface">Excellent alignment with the Job Description.</p>
+</div>
+</div>
+</main>
+<!-- Fixed Action Bottom Bar -->
+<footer class="fixed bottom-0 left-0 right-0 p-margin-mobile bg-surface/80 backdrop-blur-xl z-50">
+<div class="max-w-md mx-auto">
+<button class="w-full bg-secondary py-4 rounded-xl flex items-center justify-center gap-3 text-on-secondary font-headline-md hover:opacity-90 active:scale-95 transition-all shadow-lg">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">download</span>
+                Download Resume
+            </button>
+</div>
+</footer>
+<!-- Bottom Navigation Shell (Contextually suppressed for focus, but keeping structure per instructions if required, though typically suppressed on final CTA screens) -->
+<!-- Applying "Suppression Rule" as this is a Task-Focused Confirmation screen -->
+<script>
+        // Micro-interaction for the download button
+        const downloadBtn = document.querySelector('button.bg-secondary');
+        downloadBtn.addEventListener('click', () => {
+            const originalContent = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">sync</span> Processing...`;
+            downloadBtn.classList.add('opacity-80');
+            
+            setTimeout(() => {
+                downloadBtn.innerHTML = `<span class="material-symbols-outlined">check_circle</span> Downloaded`;
+                downloadBtn.classList.replace('bg-secondary', 'bg-primary');
+                downloadBtn.classList.replace('text-on-secondary', 'text-white');
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    downloadBtn.innerHTML = originalContent;
+                    downloadBtn.classList.replace('bg-primary', 'bg-secondary');
+                    downloadBtn.classList.replace('text-white', 'text-on-secondary');
+                    downloadBtn.classList.remove('opacity-80');
+                }, 3000);
+            }, 1500);
+        });
+    </script>
+</body></html>

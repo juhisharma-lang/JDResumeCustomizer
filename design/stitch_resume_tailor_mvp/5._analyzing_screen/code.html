@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>ResumeSync - Analyzing Screen</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#464555",
+                        "tertiary-fixed": "#ffdbca",
+                        "on-secondary-fixed": "#171e00",
+                        "tertiary-fixed-dim": "#ffb690",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#783200",
+                        "primary-container": "#4f46e5",
+                        "on-secondary-container": "#566a00",
+                        "on-surface": "#0b1c30",
+                        "secondary-container": "#c6f000",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "primary-fixed": "#e2dfff",
+                        "inverse-surface": "#213145",
+                        "on-tertiary-container": "#ffd2bd",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#dad7ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "outline": "#777587",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-low": "#eff4ff",
+                        "surface": "#f8f9ff",
+                        "secondary-fixed": "#c8f300",
+                        "tertiary": "#7b3300",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-primary": "#c3c0ff",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#cbdbf5",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary-fixed-variant": "#3e4c00",
+                        "surface-container-highest": "#d3e4fe",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#0f0069",
+                        "surface-tint": "#4d44e3",
+                        "outline-variant": "#c7c4d8",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#a04500",
+                        "secondary": "#536600",
+                        "background": "#f8f9ff",
+                        "secondary-fixed-dim": "#afd500",
+                        "on-background": "#0b1c30",
+                        "primary": "#3525cd",
+                        "on-tertiary-fixed": "#341100"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-sm": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(.33); opacity: 0.8; }
+            80%, 100% { opacity: 0; }
+        }
+        @keyframes pulse-circle {
+            0% { transform: scale(.8); opacity: 0.5; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(.8); opacity: 0.5; }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        .animate-pulse-circle {
+            animation: pulse-circle 2.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        
+        .floating-element {
+            animation: floating 4s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Loading progress beam */
+        .progress-beam {
+            width: 100%;
+            height: 4px;
+            background: #e2dfff;
+            position: relative;
+            overflow: hidden;
+            border-radius: 9999px;
+        }
+        .progress-beam::after {
+            content: '';
+            position: absolute;
+            left: -50%;
+            width: 50%;
+            height: 100%;
+            background: #3525cd;
+            animation: beam 1.5s infinite linear;
+        }
+        @keyframes beam {
+            0% { left: -50%; }
+            100% { left: 100%; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between px-margin-mobile h-16 w-full fixed top-0 z-50 bg-surface dark:bg-on-background shadow-sm dark:shadow-none">
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-primary dark:text-primary-fixed active:scale-95 transition-transform duration-200 hover:opacity-80 transition-opacity" data-icon="arrow_back">arrow_back</button>
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">ResumeSync</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant dark:text-on-surface-variant hover:opacity-80 transition-opacity" data-icon="more_vert">more_vert</button>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col items-center justify-center px-margin-mobile pt-16 pb-24 text-center">
+<!-- Atmospheric Background Layer (Subtle Gradient) -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,_rgba(79,70,229,0.05)_0%,_transparent_60%)]"></div>
+</div>
+<!-- Animation Container -->
+<div class="relative w-64 h-64 mb-10 flex items-center justify-center">
+<!-- Pulsing Rings -->
+<div class="absolute inset-0 border-4 border-primary/20 rounded-full animate-pulse-ring"></div>
+<div class="absolute inset-4 border-4 border-primary/10 rounded-full animate-pulse-ring" style="animation-delay: 0.5s;"></div>
+<div class="absolute inset-8 border-4 border-secondary/20 rounded-full animate-pulse-ring" style="animation-delay: 1s;"></div>
+<!-- Central Graphic -->
+<div class="relative z-10 w-32 h-32 bg-white rounded-3xl shadow-xl flex flex-col items-center justify-center p-4">
+<div class="grid grid-cols-2 gap-2 w-full">
+<!-- Resume Icon Mock -->
+<div class="h-10 bg-primary/10 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="description">description</span>
+</div>
+<!-- JD Icon Mock -->
+<div class="h-10 bg-secondary-container/30 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-2xl" data-icon="analytics">analytics</span>
+</div>
+</div>
+<!-- Scanning Effect Line -->
+<div class="mt-4 w-full h-1 bg-surface-container rounded-full overflow-hidden relative">
+<div class="absolute inset-y-0 left-0 bg-primary w-1/2 animate-[beam_2s_infinite_ease-in-out]"></div>
+</div>
+<span class="mt-3 text-label-md font-label-md text-primary tracking-widest uppercase">SYNCING</span>
+</div>
+<!-- Floating Data Chips (Micro-interactions) -->
+<div class="absolute top-0 right-0 p-3 bg-white shadow-lg rounded-full floating-element" style="animation-delay: 0.2s;">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="absolute bottom-4 left-0 p-2 bg-white shadow-lg rounded-xl floating-element" style="animation-delay: 0.8s;">
+<span class="material-symbols-outlined text-secondary text-xl" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<!-- Messaging -->
+<div class="space-y-4 max-w-sm">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Comparing your resume to the job description...</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Identifying key skills and match gaps to give you the perfect alignment.</p>
+</div>
+<!-- Progress Indicator -->
+<div class="mt-12 w-full max-w-xs space-y-2">
+<div class="flex justify-between items-end">
+<span class="font-label-md text-label-md text-outline">Progress</span>
+<span class="font-label-md text-label-md text-primary" id="progress-val">64%</span>
+</div>
+<div class="progress-beam"></div>
+</div>
+<!-- Bottom Action -->
+<div class="fixed bottom-0 left-0 w-full p-margin-mobile bg-gradient-to-t from-background via-background to-transparent pt-12">
+<button class="w-full h-14 bg-surface border-2 border-outline-variant text-on-surface-variant font-headline-md text-body-lg rounded-xl hover:bg-surface-container-high transition-colors active:scale-95 duration-150 flex items-center justify-center gap-2" id="continue-btn">
+                Continue
+                <span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar (Suppressed due to transactional/loading state logic, but skeleton kept in comments if context changes) -->
+<!-- Navigation is hidden to prioritize the 'Analyzing' focus -->
+<script>
+        // Micro-interaction for progress simulation
+        const progressVal = document.getElementById('progress-val');
+        const continueBtn = document.getElementById('continue-btn');
+        let currentProgress = 64;
+
+        const interval = setInterval(() => {
+            if (currentProgress < 100) {
+                currentProgress += Math.floor(Math.random() * 5);
+                if (currentProgress > 100) currentProgress = 100;
+                progressVal.textContent = currentProgress + '%';
+            } else {
+                clearInterval(interval);
+                // Highlight button when finished
+                continueBtn.classList.remove('border-outline-variant', 'text-on-surface-variant');
+                continueBtn.classList.add('border-primary', 'text-primary', 'shadow-lg');
+            }
+        }, 1000);
+
+        // Continue button interaction
+        continueBtn.addEventListener('click', () => {
+            alert('Analysis complete. Moving to review screen.');
+        });
+    </script>
+</body></html>

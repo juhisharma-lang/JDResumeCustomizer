@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>ResumeSync - JD Input</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#464555",
+                    "tertiary-fixed": "#ffdbca",
+                    "on-secondary-fixed": "#171e00",
+                    "tertiary-fixed-dim": "#ffb690",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#783200",
+                    "primary-container": "#4f46e5",
+                    "on-secondary-container": "#566a00",
+                    "on-surface": "#0b1c30",
+                    "secondary-container": "#c6f000",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "primary-fixed": "#e2dfff",
+                    "inverse-surface": "#213145",
+                    "on-tertiary-container": "#ffd2bd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#dad7ff",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "outline": "#777587",
+                    "surface-container-high": "#dce9ff",
+                    "surface-container-low": "#eff4ff",
+                    "surface": "#f8f9ff",
+                    "secondary-fixed": "#c8f300",
+                    "tertiary": "#7b3300",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-primary": "#c3c0ff",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#cbdbf5",
+                    "surface-variant": "#d3e4fe",
+                    "on-secondary-fixed-variant": "#3e4c00",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#0f0069",
+                    "surface-tint": "#4d44e3",
+                    "outline-variant": "#c7c4d8",
+                    "error": "#ba1a1a",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#a04500",
+                    "secondary": "#536600",
+                    "background": "#f8f9ff",
+                    "secondary-fixed-dim": "#afd500",
+                    "on-background": "#0b1c30",
+                    "primary": "#3525cd",
+                    "on-tertiary-fixed": "#341100"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-sm": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ai-gradient-border {
+            position: relative;
+            background: #fff;
+            background-clip: padding-box;
+            border: 2px solid transparent;
+        }
+        .ai-gradient-border::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            margin: -2px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, #4d44e3, #c8f300);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c7c4d8;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between px-margin-mobile h-16 w-full fixed top-0 z-50 bg-surface dark:bg-on-background shadow-sm dark:shadow-none">
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">ResumeSync</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a young entrepreneur in a modern office, illuminated by soft morning light coming through a large window. The aesthetic is clean and high-fidelity, featuring a palette of whites and deep purples, reflecting a modern corporate SaaS brand identity with high-end photographic quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkU5_iTx-r_KKjs7h_loHXG43toYqDWV2eLhmp6lDKb2GqHO_kaWq3u4OBNqfW9vl0HLfr6a_G1DAFJO4OjmqoeoEEk4CmOrSSG_om5oH8VsF1WjVP5ChbxcxF9S0Z9MLn59lD_gui0yMKYqDx0FJKOyTVBH1aopNVEMG9Fm53zCUAZysVTYuj5IXbEfF4Kp1Z6qTVdxvaHNp7BIsrpTxd4W2kwum8ky-0rAFUF6-TZ2Ox7-AhDn-4UFWayTNG1wB-js7BSG8gg_E"/>
+</div>
+</header>
+<main class="flex-1 mt-16 px-margin-mobile pt-8 pb-24 max-w-lg mx-auto w-full">
+<!-- Header Text -->
+<section class="mb-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Job Details</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Paste the job description or a link to the job posting to start the AI sync process.</p>
+</section>
+<!-- Toggle Switch -->
+<div class="bg-surface-container-low p-1.5 rounded-xl flex mb-8">
+<button class="flex-1 py-2.5 rounded-lg font-label-md text-label-md transition-all duration-300 bg-white shadow-sm text-primary" id="toggle-text" onclick="switchInput('text')">
+                Paste Text
+            </button>
+<button class="flex-1 py-2.5 rounded-lg font-label-md text-label-md transition-all duration-300 text-on-surface-variant hover:text-primary" id="toggle-url" onclick="switchInput('url')">
+                Paste URL
+            </button>
+</div>
+<!-- Input Area -->
+<div class="space-y-6">
+<!-- Textarea Content -->
+<div class="transition-all duration-500 opacity-100 transform translate-y-0 h-auto" id="input-text-container">
+<div class="group relative">
+<textarea class="w-full h-80 bg-white border-2 border-outline-variant rounded-xl p-4 font-body-md text-body-md focus:border-primary focus:ring-0 transition-colors resize-none custom-scrollbar" id="jd-textarea" oninput="validateInput()" placeholder="Paste the full job description here... (e.g. Responsibilities, Requirements, Preferred Skills)"></textarea>
+<div class="absolute bottom-4 right-4 pointer-events-none">
+<span class="material-symbols-outlined text-outline-variant group-focus-within:text-primary transition-colors" data-icon="description">description</span>
+</div>
+</div>
+<div class="mt-4 p-4 rounded-xl bg-surface-container border border-surface-container-high flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="info">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">The more detail you provide, the better ResumeSync can tailor your keywords.</p>
+</div>
+</div>
+<!-- URL Content (Hidden by default) -->
+<div class="hidden transition-all duration-500 opacity-0 transform translate-y-4" id="input-url-container">
+<div class="group relative">
+<input class="w-full bg-white border-2 border-outline-variant rounded-xl px-4 py-4 font-body-md text-body-md focus:border-primary focus:ring-0 transition-colors" id="jd-url" oninput="validateInput()" placeholder="https://linkedin.com/jobs/view/..." type="url"/>
+<div class="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline-variant group-focus-within:text-primary transition-colors" data-icon="link">link</span>
+</div>
+</div>
+<div class="mt-8 space-y-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Common Platforms</h3>
+<div class="grid grid-cols-2 gap-3">
+<div class="flex items-center gap-2 p-3 rounded-xl border border-outline-variant bg-white">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="work">work</span>
+<span class="font-body-sm text-body-sm">LinkedIn</span>
+</div>
+<div class="flex items-center gap-2 p-3 rounded-xl border border-outline-variant bg-white">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="language">language</span>
+<span class="font-body-sm text-body-sm">Indeed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions -->
+<div class="fixed bottom-0 left-0 right-0 p-margin-mobile bg-white/80 backdrop-blur-md z-40">
+<div class="max-w-lg mx-auto">
+<button class="w-full h-14 bg-outline-variant text-on-surface-variant cursor-not-allowed rounded-xl font-headline-md text-headline-md flex items-center justify-center gap-2 transition-all duration-300" disabled="" id="continue-btn" onclick="handleContinue()">
+<span>Continue</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        let currentMode = 'text';
+
+        function switchInput(mode) {
+            if (currentMode === mode) return;
+            currentMode = mode;
+
+            const textBtn = document.getElementById('toggle-text');
+            const urlBtn = document.getElementById('toggle-url');
+            const textContainer = document.getElementById('input-text-container');
+            const urlContainer = document.getElementById('input-url-container');
+
+            if (mode === 'text') {
+                // Style updates
+                textBtn.classList.add('bg-white', 'shadow-sm', 'text-primary');
+                textBtn.classList.remove('text-on-surface-variant');
+                urlBtn.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+                urlBtn.classList.add('text-on-surface-variant');
+
+                // Content switch
+                urlContainer.classList.add('hidden', 'opacity-0', 'translate-y-4');
+                textContainer.classList.remove('hidden');
+                setTimeout(() => {
+                    textContainer.classList.remove('opacity-0', 'translate-y-4');
+                    textContainer.classList.add('opacity-100', 'translate-y-0');
+                }, 10);
+            } else {
+                // Style updates
+                urlBtn.classList.add('bg-white', 'shadow-sm', 'text-primary');
+                urlBtn.classList.remove('text-on-surface-variant');
+                textBtn.classList.remove('bg-white', 'shadow-sm', 'text-primary');
+                textBtn.classList.add('text-on-surface-variant');
+
+                // Content switch
+                textContainer.classList.add('hidden', 'opacity-0', 'translate-y-4');
+                urlContainer.classList.remove('hidden');
+                setTimeout(() => {
+                    urlContainer.classList.remove('opacity-0', 'translate-y-4');
+                    urlContainer.classList.add('opacity-100', 'translate-y-0');
+                }, 10);
+            }
+            validateInput();
+        }
+
+        function validateInput() {
+            const textArea = document.getElementById('jd-textarea');
+            const urlInput = document.getElementById('jd-url');
+            const btn = document.getElementById('continue-btn');
+            
+            let isValid = false;
+            if (currentMode === 'text') {
+                isValid = textArea.value.trim().length > 50;
+            } else {
+                const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+                isValid = urlPattern.test(urlInput.value.trim());
+            }
+
+            if (isValid) {
+                btn.disabled = false;
+                btn.classList.remove('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+                btn.classList.add('bg-primary', 'text-on-primary', 'shadow-lg', 'active:scale-95');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+                btn.classList.remove('bg-primary', 'text-on-primary', 'shadow-lg', 'active:scale-95');
+            }
+        }
+
+        function handleContinue() {
+            const btn = document.getElementById('continue-btn');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="sync">sync</span><span>Analyzing...</span>';
+            btn.disabled = true;
+            
+            setTimeout(() => {
+                alert('Analysis complete! Redirecting to ResumeSync matches...');
+                btn.innerHTML = '<span>Continue</span><span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>';
+                btn.disabled = false;
+            }, 2000);
+        }
+    </script>
+</body></html>

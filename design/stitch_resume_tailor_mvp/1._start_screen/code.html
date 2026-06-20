@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>ResumeSync - Sync Your Career</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#464555",
+                    "tertiary-fixed": "#ffdbca",
+                    "on-secondary-fixed": "#171e00",
+                    "tertiary-fixed-dim": "#ffb690",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#783200",
+                    "primary-container": "#4f46e5",
+                    "on-secondary-container": "#566a00",
+                    "on-surface": "#0b1c30",
+                    "secondary-container": "#c6f000",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "primary-fixed": "#e2dfff",
+                    "inverse-surface": "#213145",
+                    "on-tertiary-container": "#ffd2bd",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#dad7ff",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "outline": "#777587",
+                    "surface-container-high": "#dce9ff",
+                    "surface-container-low": "#eff4ff",
+                    "surface": "#f8f9ff",
+                    "secondary-fixed": "#c8f300",
+                    "tertiary": "#7b3300",
+                    "surface-bright": "#f8f9ff",
+                    "inverse-primary": "#c3c0ff",
+                    "on-error-container": "#93000a",
+                    "surface-dim": "#cbdbf5",
+                    "surface-variant": "#d3e4fe",
+                    "on-secondary-fixed-variant": "#3e4c00",
+                    "surface-container-highest": "#d3e4fe",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#0f0069",
+                    "surface-tint": "#4d44e3",
+                    "outline-variant": "#c7c4d8",
+                    "error": "#ba1a1a",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#a04500",
+                    "secondary": "#536600",
+                    "background": "#f8f9ff",
+                    "secondary-fixed-dim": "#afd500",
+                    "on-background": "#0b1c30",
+                    "primary": "#3525cd",
+                    "on-tertiary-fixed": "#341100"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "margin-desktop": "40px",
+                    "margin-mobile": "16px",
+                    "base": "8px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "headline-xl": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-sm": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .bg-pattern {
+            background-color: #f8f9ff;
+            background-image: radial-gradient(circle at 2px 2px, #e2dfff 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation Anchor (Manual for Start Screen, No BottomNav as per Shell Visibility Rules) -->
+<header class="flex items-center justify-between px-margin-mobile h-16 w-full fixed top-0 z-50 bg-surface/80 backdrop-blur-md">
+<div class="font-headline-md text-headline-md font-bold text-primary">ResumeSync</div>
+<button class="material-symbols-outlined text-primary text-2xl hover:opacity-80 transition-opacity">help_outline</button>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col relative pt-16 pb-32">
+<!-- Subtle Geometric Background Shapes -->
+<div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+<!-- Purple Geometric Accent -->
+<div class="absolute -top-10 -right-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+<!-- Lime Green Accent -->
+<div class="absolute top-1/2 -left-20 w-80 h-80 bg-secondary-container/30 rounded-full blur-[100px] transform -translate-y-1/2"></div>
+<!-- Floating Decorative Icons/Shapes -->
+<div class="absolute top-32 right-12 float-animation" style="animation-delay: 0s;">
+<div class="w-12 h-12 rounded-xl bg-white shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+</div>
+<div class="absolute top-64 left-8 float-animation" style="animation-delay: 1.5s;">
+<div class="w-10 h-10 rounded-lg bg-secondary-container shadow-md flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">bolt</span>
+</div>
+</div>
+<div class="absolute bottom-64 right-16 float-animation" style="animation-delay: 0.8s;">
+<div class="w-14 h-14 rounded-2xl bg-white shadow-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+</div>
+</div>
+<!-- Content Section -->
+<div class="flex-1 flex flex-col justify-center px-margin-mobile z-10">
+<div class="mb-12 space-y-6">
+<!-- Visual Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 w-fit">
+<span class="material-symbols-outlined text-[16px] text-primary">auto_awesome</span>
+<span class="text-label-md font-label-md text-primary tracking-wider">AI-POWERED OPTIMIZATION</span>
+</div>
+<!-- Headline -->
+<h1 class="font-headline-xl text-headline-xl text-on-background max-w-[280px]">
+                    Sync Your <br/><span class="text-primary italic">Career.</span>
+</h1>
+<!-- Subheadline -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[320px]">
+                    Optimize your resume for any job description in seconds.
+                </p>
+</div>
+<!-- Bento-style Feature Glimpse -->
+<div class="grid grid-cols-2 gap-3 mb-8">
+<div class="col-span-1 p-4 glass-panel rounded-2xl shadow-sm border border-white/40">
+<span class="material-symbols-outlined text-primary mb-2 block">task_alt</span>
+<h3 class="font-label-md text-label-md font-bold mb-1">98% Match</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">ATS precision</p>
+</div>
+<div class="col-span-1 p-4 glass-panel rounded-2xl shadow-sm border border-white/40">
+<span class="material-symbols-outlined text-secondary mb-2 block">timer</span>
+<h3 class="font-label-md text-label-md font-bold mb-1">Instant</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight">Zero waiting</p>
+</div>
+</div>
+</div>
+<!-- Hero Graphic (Abstract representation of sync) -->
+<div class="relative w-full h-40 overflow-hidden mb-12">
+<div class="absolute inset-0 flex items-center justify-center space-x-4">
+<div class="w-32 h-44 bg-white rounded-xl shadow-xl border border-primary/5 flex flex-col p-4 opacity-40 transform -rotate-12 translate-x-12 translate-y-8">
+<div class="w-full h-2 bg-surface-container-highest rounded mb-2"></div>
+<div class="w-2/3 h-2 bg-surface-container-highest rounded mb-4"></div>
+<div class="flex-1 space-y-2">
+<div class="w-full h-1 bg-surface-container-low rounded"></div>
+<div class="w-full h-1 bg-surface-container-low rounded"></div>
+</div>
+</div>
+<div class="w-40 h-56 bg-white rounded-xl shadow-2xl border border-primary/10 flex flex-col p-5 z-20">
+<div class="flex items-center justify-between mb-4">
+<div class="w-8 h-8 rounded-full bg-primary/10"></div>
+<div class="w-16 h-4 bg-secondary-container rounded-full"></div>
+</div>
+<div class="space-y-3">
+<div class="w-full h-2 bg-primary/20 rounded"></div>
+<div class="w-full h-2 bg-primary/20 rounded"></div>
+<div class="w-2/3 h-2 bg-primary/20 rounded"></div>
+</div>
+<div class="mt-auto pt-4 border-t border-surface-container-low flex justify-center">
+<div class="w-full h-8 bg-secondary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px] text-on-secondary-container">sync</span>
+</div>
+</div>
+</div>
+<div class="w-32 h-44 bg-white rounded-xl shadow-xl border border-primary/5 flex flex-col p-4 opacity-40 transform rotate-12 -translate-x-12 translate-y-8">
+<div class="w-full h-2 bg-surface-container-highest rounded mb-2"></div>
+<div class="w-full h-1 bg-surface-container-low rounded mb-1"></div>
+<div class="w-full h-1 bg-surface-container-low rounded"></div>
+</div>
+</div>
+</div>
+<!-- Sticky Footer Action -->
+<div class="fixed bottom-0 left-0 right-0 p-margin-mobile bg-white/60 backdrop-blur-lg z-50">
+<button class="w-full h-14 bg-primary text-on-primary rounded-xl font-headline-md text-headline-md flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform">
+                Get Started
+                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center mt-3 font-label-md text-label-md text-on-surface-variant">
+                Already have an account? <a class="text-primary font-bold" href="#">Log In</a>
+</p>
+</div>
+</main>
+<script>
+        // Micro-interaction for the button
+        const startBtn = document.querySelector('button');
+        startBtn.addEventListener('click', () => {
+            startBtn.classList.add('scale-95');
+            setTimeout(() => {
+                startBtn.classList.remove('scale-95');
+                // Potential navigation logic
+                console.log('Navigating to onboarding...');
+            }, 100);
+        });
+
+        // Dynamic background parallax effect on device tilt or mouse move
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.float-animation');
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 20;
+                shape.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    </script>
+</body></html>
