@@ -23,11 +23,6 @@ export default function FinalReviewScreen({
   const rejected = suggestions.filter((s) => s.decision === 'reject');
   const custom = suggestions.filter((s) => s.decision === 'custom');
 
-  const acceptedPct =
-    suggestions.length > 0
-      ? Math.round(((accepted.length + custom.length) / suggestions.length) * 100)
-      : 90;
-
   // Summary items derived from real data
   const changeItems: { text: string; muted?: boolean }[] = [
     ...(accepted.length > 0
@@ -48,13 +43,10 @@ export default function FinalReviewScreen({
     if (!generateResult) return null;
     const { finalPageCount, originalPageCount, pageCountExceeded } = generateResult;
     if (pageCountExceeded) {
-      return `${finalPageCount} page${finalPageCount !== 1 ? 's' : ''} (original: ${originalPageCount})`;
+      // Trim ran but couldn't bring the count down to the ATS baseline
+      return `${finalPageCount} page${finalPageCount !== 1 ? 's' : ''} — couldn't trim to ${originalPageCount}`;
     }
-    if (finalPageCount === originalPageCount) {
-      return `${finalPageCount} page${finalPageCount !== 1 ? 's' : ''} — matches original`;
-    }
-    // Shorter than original (rare but possible)
-    return `${finalPageCount} page${finalPageCount !== 1 ? 's' : ''} (original: ${originalPageCount})`;
+    return `${finalPageCount} page${finalPageCount !== 1 ? 's' : ''}`;
   })();
 
   return (
@@ -210,51 +202,6 @@ export default function FinalReviewScreen({
           </div>
         )}
 
-        {/* Match score circle widget — shown once generation is done */}
-        {generateResult && (
-          <div className="bg-surface-container-low rounded-xl p-4 mb-8 flex items-center gap-4">
-            <div className="relative w-16 h-16 shrink-0">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 64 64">
-                <circle
-                  className="text-outline-variant"
-                  cx="32"
-                  cy="32"
-                  r="28"
-                  fill="transparent"
-                  stroke="currentColor"
-                  strokeWidth="6"
-                />
-                <circle
-                  className="text-secondary"
-                  cx="32"
-                  cy="32"
-                  r="28"
-                  fill="transparent"
-                  stroke="currentColor"
-                  strokeDasharray="175.9"
-                  strokeDashoffset={175.9 * (1 - acceptedPct / 100)}
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-body-sm font-bold text-on-surface">{acceptedPct}%</span>
-              </div>
-            </div>
-            <div>
-              <h4 className="text-label-md font-semibold text-on-surface-variant uppercase tracking-widest">
-                Match Score
-              </h4>
-              <p className="text-body-md text-on-surface">
-                {acceptedPct >= 80
-                  ? 'Excellent alignment with the Job Description.'
-                  : acceptedPct >= 60
-                  ? 'Good alignment — a few gaps remain.'
-                  : 'Partial alignment — consider revisiting.'}
-              </p>
-            </div>
-          </div>
-        )}
 
       </main>
 

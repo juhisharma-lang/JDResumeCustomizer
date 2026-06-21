@@ -1,9 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/suggestions/route": "app/api/suggestions/route.js",
-  "/api/extract-jd/route": "app/api/extract-jd/route.js",
-  "/page": "app/page.js",
   "/api/generate-resume/route": "app/api/generate-resume/route.js",
-  "/api/parse-resume/route": "app/api/parse-resume/route.js",
-  "/api/verdict/route": "app/api/verdict/route.js"
+  "/page": "app/page.js",
+  "/api/suggestions/route": "app/api/suggestions/route.js"
 }

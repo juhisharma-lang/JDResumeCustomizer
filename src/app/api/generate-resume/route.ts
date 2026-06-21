@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import React from 'react';
 import Anthropic from '@anthropic-ai/sdk';
-import type { ParsedResume, ResumeSection, ResumeHeaderData, ResolvedSuggestion, TrimChange } from '@/types';
+import type { ParsedResume, ResumeSection, ResolvedSuggestion, TrimChange } from '@/types';
 
 const client = new Anthropic();
-
-// ─── section schema reused in both Claude tool calls ─────────────────────────
 
 const bodySectionSchema = {
   type: 'object' as const,
@@ -16,80 +14,35 @@ const bodySectionSchema = {
   required: ['title', 'content'],
 };
 
-// ─── apply accepted edits via Claude ─────────────────────────────────────────
+// ─── apply accepted edits via deterministic string replacement ────────────────
+// Using exact string replacement (not Claude) guarantees the accepted suggestion
+// text is inserted verbatim — no reinterpretation or creative paraphrasing.
 
-async function applyEditsWithClaude(
+function applyEditsDirectly(
   sections: ResumeSection[],
   resolved: ResolvedSuggestion[],
-): Promise<ResumeSection[]> {
-  // Group replacements by section for clarity in the prompt
-  const replacementsBySec: Record<string, { target: string; replacement: string }[]> = {};
+): ResumeSection[] {
+  const replacementsBySec: Record<string, { original: string; finalText: string }[]> = {};
   for (const r of resolved) {
     if (!replacementsBySec[r.section]) replacementsBySec[r.section] = [];
-    replacementsBySec[r.section].push({ target: r.original, replacement: r.finalText });
+    replacementsBySec[r.section].push({ original: r.original, finalText: r.finalText });
   }
 
-  const sectionDescriptions = sections.map((s) => {
-    if ('data' in s) {
-      return `SECTION: Header\n[structured header — copy verbatim, make no changes]`;
-    }
+  return sections.map((s) => {
+    if ('data' in s) return s; // Header: pass through unchanged
     const reps = replacementsBySec[s.title];
-    if (!reps || reps.length === 0) {
-      return `SECTION: ${s.title}\nSTATUS: No edits — copy content exactly as given\nCONTENT:\n${s.content}`;
+    if (!reps || reps.length === 0) return s;
+
+    let content = s.content;
+    for (const { original, finalText } of reps) {
+      if (content.includes(original)) {
+        // Split/join avoids any regex interpretation of special characters in original text
+        content = content.split(original).join(finalText);
+      }
+      // If the exact string isn't found, skip silently — safer than a partial match
     }
-    const repList = reps
-      .map((r, i) => `  Replacement ${i + 1}:\n    TARGET: ${r.target}\n    USE INSTEAD: ${r.replacement}`)
-      .join('\n');
-    return `SECTION: ${s.title}\nSTATUS: Apply replacements below, change nothing else\nCONTENT:\n${s.content}\nREPLACEMENTS:\n${repList}`;
+    return { title: s.title, content };
   });
-
-  // Pull out the header data to pass through unchanged
-  const headerSection = sections.find((s): s is { title: 'Header'; data: ResumeHeaderData } => 'data' in s);
-
-  const response = await client.messages.create({
-    model: 'claude-sonnet-4-6',
-    max_tokens: 4096,
-    system: `You are applying user-approved text replacements to a resume. Your job is purely mechanical:
-- For sections marked "Apply replacements": locate the TARGET text exactly and replace it with USE INSTEAD. Touch nothing else in that section.
-- For sections marked "No edits": output the content byte-for-byte. Do not rephrase, reorder, or alter punctuation.
-- The Header section is always passed through unchanged (you will not see its content — it will be reattached by the system).
-Call the apply_edits tool with the body sections only (no Header).`,
-    tools: [
-      {
-        name: 'apply_edits',
-        description: 'Submit all non-header sections with edits applied.',
-        input_schema: {
-          type: 'object' as const,
-          properties: {
-            sections: {
-              type: 'array' as const,
-              items: bodySectionSchema,
-              description: 'All non-header sections, in original order.',
-            },
-          },
-          required: ['sections'],
-        },
-      },
-    ],
-    tool_choice: { type: 'tool', name: 'apply_edits' },
-    messages: [
-      {
-        role: 'user',
-        content: `Apply edits to these resume sections:\n\n${sectionDescriptions.join('\n\n---\n\n')}`,
-      },
-    ],
-  });
-
-  const toolUse = response.content.find((b) => b.type === 'tool_use');
-  if (!toolUse || toolUse.type !== 'tool_use') throw new Error('No tool_use in apply_edits response');
-
-  const { sections: editedBody } = toolUse.input as { sections: { title: string; content: string }[] };
-
-  // Rebuild full sections array: header first (unchanged), then edited body
-  const result: ResumeSection[] = [];
-  if (headerSection) result.push(headerSection);
-  for (const s of editedBody) result.push({ title: s.title, content: s.content });
-  return result;
 }
 
 // ─── trim pass ────────────────────────────────────────────────────────────────
@@ -107,6 +60,7 @@ Rules:
 - Tighten verbose phrasing and remove filler words. Never remove entire bullet points unless they are purely decorative.
 - Keep all specific facts, metrics, dates, job titles, technologies, and company names.
 - Do not reorder bullets or restructure sections.
+- Never use em dashes (—) or en dashes (–) in condensed text; use commas, periods, or semicolons instead.
 - Return every section even if you made no changes to it.
 Call submit_trim with the condensed sections.`,
     tools: [
@@ -163,15 +117,22 @@ Call submit_trim with the condensed sections.`,
 
 async function countPdfPages(pdfBuffer: Buffer): Promise<number> {
   try {
+    // pdf-parse exports PDFParse as a named function. @types/pdf-parse uses `export =`
+    // so TypeScript mis-types it as a constructor; cast through unknown to call it.
     const { PDFParse } = await import('pdf-parse');
-    const parser = new PDFParse({ data: pdfBuffer });
-    const result = await parser.getText();
-    return (result as { numpages?: number }).numpages ?? 1;
-  } catch {
+    const parse = PDFParse as unknown as (buf: Buffer) => Promise<{ numpages?: number }>;
+    const result = await parse(pdfBuffer);
+    const count = result.numpages ?? 1;
+    console.log('[countPdfPages] pdf-parse numpages:', count);
+    return count;
+  } catch (err) {
     // Fallback: count /Type /Page entries in the raw bytes
+    console.warn('[countPdfPages] pdf-parse failed, using regex fallback:', err);
     const str = pdfBuffer.toString('latin1');
     const matches = str.match(/\/Type\s*\/Page[^s]/g);
-    return matches ? matches.length : 1;
+    const count = matches ? matches.length : 1;
+    console.log('[countPdfPages] regex page count:', count);
+    return count;
   }
 }
 
@@ -190,13 +151,11 @@ async function renderToPdf(sections: ResumeSection[]): Promise<Buffer> {
 
 export async function POST(req: NextRequest) {
   let resume: ParsedResume;
-  let originalPageCount: number;
   let resolvedSuggestions: ResolvedSuggestion[];
 
   try {
     const body = await req.json();
     resume = body.resume;
-    originalPageCount = body.originalPageCount ?? 1;
     resolvedSuggestions = body.resolvedSuggestions ?? [];
     if (!resume?.sections) throw new Error('missing resume');
   } catch {
@@ -207,35 +166,45 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Step 1: Apply accepted edits
-    let finalSections: ResumeSection[];
-    if (resolvedSuggestions.length === 0) {
-      finalSections = resume.sections;
-    } else {
-      finalSections = await applyEditsWithClaude(resume.sections, resolvedSuggestions);
-    }
+    // Step 1: Render the original (unedited) sections to get the ATS baseline page count.
+    // This is an ATS-to-ATS comparison so the baseline is always accurate regardless of
+    // how the uploaded file estimated its own page count.
+    const baselinePdfBuffer = await renderToPdf(resume.sections);
+    const baselinePageCount = await countPdfPages(baselinePdfBuffer);
+    console.log('[generate-resume] baseline page count:', baselinePageCount);
 
-    // Step 2: Render to PDF and check page count
-    let pdfBuffer = await renderToPdf(finalSections);
-    let finalPageCount = await countPdfPages(pdfBuffer);
+    // Step 2: Apply accepted edits via deterministic string replacement (no Claude).
+    const finalSections: ResumeSection[] =
+      resolvedSuggestions.length === 0
+        ? resume.sections
+        : applyEditsDirectly(resume.sections, resolvedSuggestions);
 
-    // Step 3: Trim pass if the rendered document exceeds the original page count
+    // Step 3: Render with edits. Reuse the baseline buffer when there are no edits.
+    let pdfBuffer =
+      resolvedSuggestions.length === 0 ? baselinePdfBuffer : await renderToPdf(finalSections);
+    let finalPageCount =
+      resolvedSuggestions.length === 0 ? baselinePageCount : await countPdfPages(pdfBuffer);
+    console.log('[generate-resume] page count after applying edits:', finalPageCount, '| edits applied:', resolvedSuggestions.length);
+
+    // Step 4: Trim pass if the edited document exceeds the ATS baseline page count.
     let trimApplied = false;
     let trimChanges: TrimChange[] = [];
     let pageCountExceeded = false;
 
-    if (finalPageCount > originalPageCount) {
+    console.log('[generate-resume] trim needed:', finalPageCount > baselinePageCount);
+    if (finalPageCount > baselinePageCount) {
+      console.log('[generate-resume] starting trim pass');
       const trimResult = await trimSectionsWithClaude(finalSections);
-      finalSections = trimResult.sections;
       trimChanges = trimResult.changes;
       trimApplied = true;
 
-      // Re-render after trim
-      pdfBuffer = await renderToPdf(finalSections);
+      pdfBuffer = await renderToPdf(trimResult.sections);
       finalPageCount = await countPdfPages(pdfBuffer);
+      console.log('[generate-resume] page count after trim:', finalPageCount, '| sections changed:', trimChanges.length);
 
-      if (finalPageCount > originalPageCount) {
+      if (finalPageCount > baselinePageCount) {
         pageCountExceeded = true;
+        console.log('[generate-resume] trim did not resolve overflow — still at', finalPageCount, 'pages');
       }
     }
 
@@ -244,7 +213,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       pdfBase64,
       finalPageCount,
-      originalPageCount,
+      originalPageCount: baselinePageCount,
       pageCountExceeded,
       trimApplied,
       trimChanges,

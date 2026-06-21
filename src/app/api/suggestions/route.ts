@@ -79,6 +79,8 @@ export async function POST(req: NextRequest) {
 
 CRITICAL CONSTRAINT: You may only reword, reposition, or re-emphasise content already present in the resume. Never introduce facts, metrics, tool names, technologies, dates, job titles, or any claim that does not already appear somewhere in the resume's text. If the strongest suggestion for a section would require inventing a number or skill not in the resume, skip that suggestion entirely rather than fabricating the missing piece.
 
+FORMATTING RULE: Never use em dashes (—) or en dashes (–) in any proposed text. Use commas, periods, or semicolons instead.
+
 The resume has these sections: ${sectionTitles}
 The "section" field in each suggestion must be one of these exact section names.
 The "original" field must be a verbatim excerpt from the resume text above that you are targeting — not a paraphrase.
@@ -129,7 +131,7 @@ Call submit_suggestions with your array of suggestions.`;
                     },
                     proposed: {
                       type: 'string',
-                      description: 'The replacement text. Must only use facts, tools, and metrics already present in the resume.',
+                      description: 'The replacement text. Must only use facts, tools, and metrics already present in the resume. Never use em dashes (—) or en dashes (–); use commas, periods, or semicolons instead.',
                     },
                     rationale: {
                       type: 'string',

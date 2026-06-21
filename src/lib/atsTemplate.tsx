@@ -1,5 +1,5 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Link } from '@react-pdf/renderer';
 import type { ResumeSection, ResumeHeaderData } from '@/types';
 
 // Single-column ATS-safe template. No tables, no text boxes, no graphics.
@@ -64,16 +64,36 @@ const styles = StyleSheet.create({
   },
 });
 
-function buildContactLine(data: ResumeHeaderData): string {
-  const parts: string[] = [];
-  if (data.phone) parts.push(data.phone);
-  if (data.email) parts.push(data.email);
-  if (data.location) parts.push(data.location);
+// Renders the contact line as inline text with clickable Link nodes for URLs.
+// Shows only the link label (e.g. "LinkedIn"), never the raw URL, to avoid
+// auto-hyphenation of long URLs and keep the line clean.
+function ContactLine({ data }: { data: ResumeHeaderData }) {
+  type Part = { kind: 'text'; value: string } | { kind: 'link'; label: string; url: string };
+  const parts: Part[] = [];
+  if (data.phone) parts.push({ kind: 'text', value: data.phone });
+  if (data.email) parts.push({ kind: 'text', value: data.email });
+  if (data.location) parts.push({ kind: 'text', value: data.location });
   for (const link of data.links) {
-    if (link.url) parts.push(`${link.label}: ${link.url}`);
-    else parts.push(link.label);
+    if (link.url) parts.push({ kind: 'link', label: link.label, url: link.url });
+    else parts.push({ kind: 'text', value: link.label });
   }
-  return parts.join('   |   ');
+
+  return (
+    <Text style={styles.contactLine}>
+      {parts.map((part, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? '   |   ' : ''}
+          {part.kind === 'link' ? (
+            <Link src={part.url} style={{ color: '#444444', textDecoration: 'none' }}>
+              {part.label}
+            </Link>
+          ) : (
+            part.value
+          )}
+        </React.Fragment>
+      ))}
+    </Text>
+  );
 }
 
 function SectionContent({ content }: { content: string }) {
@@ -108,7 +128,7 @@ export function ATSTemplate({ sections }: { sections: ResumeSection[] }) {
           <View>
             <Text style={styles.name}>{header.data.name}</Text>
             {header.data.title && <Text style={styles.professionalTitle}>{header.data.title}</Text>}
-            <Text style={styles.contactLine}>{buildContactLine(header.data)}</Text>
+            <ContactLine data={header.data} />
           </View>
         )}
 
