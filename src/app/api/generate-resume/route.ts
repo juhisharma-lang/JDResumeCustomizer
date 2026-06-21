@@ -14,9 +14,118 @@ const bodySectionSchema = {
   required: ['title', 'content'],
 };
 
+// ─── text normalisation helpers ───────────────────────────────────────────────
+
+// Converts a single character to its ASCII equivalent for matching purposes.
+// Handles the most common sources of mismatch: Unicode quotes, dashes, and
+// non-breaking spaces that PDF/DOCX extractors and Claude produce inconsistently.
+function normChar(ch: string): string {
+  if (ch === '‘' || ch === '’' || ch === 'ʼ') return "'";
+  if (ch === '“' || ch === '”' || ch === '«' || ch === '»') return '"';
+  if (ch === '–' || ch === '—' || ch === '―') return '-';
+  if (ch === ' ' || ch === ' ') return ' ';
+  return ch;
+}
+
+// Produces a normalised form of `s` suitable for fuzzy comparison: unicode
+// punctuation → ASCII, whitespace runs → single space, trimmed.
+function normalizeText(s: string): string {
+  let out = '';
+  let prevSpace = false;
+  for (const ch of s) {
+    const n = normChar(ch);
+    if (/\s/.test(n)) {
+      if (!prevSpace) { out += ' '; prevSpace = true; }
+    } else {
+      out += n;
+      prevSpace = false;
+    }
+  }
+  return out.trim();
+}
+
+// Strips surrounding double-quotes that Claude sometimes emits when it treats a
+// header field value as a JSON string literal (e.g. returns `"Senior Engineer"`
+// with the quotes included rather than just `Senior Engineer`).
+function stripOuterQuotes(s: string): string {
+  if (s.length >= 2 && s.startsWith('"') && s.endsWith('"') && !s.slice(1, -1).includes('"')) {
+    return s.slice(1, -1);
+  }
+  return s;
+}
+
+// Replaces all occurrences of `original` inside `content` with `replacement`.
+// Tries exact match first; falls back to a normalised match that tolerates
+// whitespace variation and Unicode punctuation variants (curly quotes, non-
+// breaking spaces, en/em dashes). When normalised matching is used, the
+// replacement is spliced into the *original* content bytes so surrounding
+// formatting (real newlines, tabs, etc.) outside the matched span is preserved.
+function applyReplacement(
+  content: string,
+  original: string,
+  replacement: string,
+): { result: string; applied: boolean } {
+  // Pass 1 — exact
+  if (content.includes(original)) {
+    return { result: content.split(original).join(replacement), applied: true };
+  }
+
+  // Pass 2 — normalised
+  const normTarget = normalizeText(original);
+  if (!normTarget) return { result: content, applied: false };
+
+  // Build normBuf (normalised version of content) and a parallel index array
+  // normToOrig[i] = index in `content` of the character that produced normBuf[i].
+  // Consecutive whitespace is collapsed so normBuf[i] may represent a run of
+  // whitespace characters in content; normToOrig[i] points to the first one.
+  let normBuf = '';
+  const normToOrig: number[] = [];
+  let prevSpace = false;
+  for (let i = 0; i < content.length; i++) {
+    const n = normChar(content[i]);
+    if (/\s/.test(n)) {
+      if (!prevSpace) { normBuf += ' '; normToOrig.push(i); prevSpace = true; }
+    } else {
+      normBuf += n;
+      normToOrig.push(i);
+      prevSpace = false;
+    }
+  }
+
+  if (!normBuf.includes(normTarget)) return { result: content, applied: false };
+
+  // Replace all occurrences, splicing into `result` with an offset to account
+  // for length changes from previous replacements.
+  let result = content;
+  let offset = 0;
+  let searchFrom = 0;
+
+  while (true) {
+    const ni = normBuf.indexOf(normTarget, searchFrom);
+    if (ni === -1) break;
+
+    const origStart = normToOrig[ni];
+    const origEnd =
+      ni + normTarget.length < normToOrig.length
+        ? normToOrig[ni + normTarget.length]
+        : content.length;
+
+    result =
+      result.slice(0, origStart + offset) +
+      replacement +
+      result.slice(origEnd + offset);
+    offset += replacement.length - (origEnd - origStart);
+    searchFrom = ni + normTarget.length;
+  }
+
+  return { result, applied: true };
+}
+
 // ─── apply accepted edits via deterministic string replacement ────────────────
-// Using exact string replacement (not Claude) guarantees the accepted suggestion
-// text is inserted verbatim — no reinterpretation or creative paraphrasing.
+// Using string replacement (not Claude) guarantees the accepted suggestion text
+// is inserted verbatim — no reinterpretation or creative paraphrasing.
+// Exact match is tried first; a normalised fuzzy match is the fallback so that
+// minor whitespace or Unicode punctuation differences don't silently drop edits.
 
 function applyEditsDirectly(
   sections: ResumeSection[],
@@ -30,30 +139,48 @@ function applyEditsDirectly(
 
   return sections.map((s) => {
     if ('data' in s) {
-      // Apply accepted edits to Header string fields the same way body sections are handled.
       const reps = replacementsBySec['Header'];
       if (!reps || reps.length === 0) return s;
       let { name, title, phone, email, location, links } = s.data;
-      for (const { original, finalText } of reps) {
+      for (const { original, finalText: raw } of reps) {
+        // Strip surrounding JSON-string quotes that Claude sometimes emits for
+        // header field values (e.g. `"Senior Engineer"` with literal quote chars).
+        const finalText = stripOuterQuotes(raw);
         let applied = false;
-        if (name.includes(original)) { name = name.split(original).join(finalText); applied = true; }
-        if (title && title.includes(original)) { title = title.split(original).join(finalText); applied = true; }
-        if (phone && phone.includes(original)) { phone = phone.split(original).join(finalText); applied = true; }
-        if (email && email.includes(original)) { email = email.split(original).join(finalText); applied = true; }
-        if (location && location.includes(original)) { location = location.split(original).join(finalText); applied = true; }
-        if (!applied) console.warn('[applyEditsDirectly] edit not applied — original text not found in Header | original:', JSON.stringify(original.slice(0, 80)));
+        const tryField = (field: string): string => {
+          const { result, applied: ok } = applyReplacement(field, original, finalText);
+          if (ok) applied = true;
+          return result;
+        };
+        name = tryField(name);
+        if (title != null) title = tryField(title);
+        if (phone != null) phone = tryField(phone);
+        if (email != null) email = tryField(email);
+        if (location != null) location = tryField(location);
+        if (!applied) {
+          console.warn(
+            '[applyEditsDirectly] edit not applied — original text not found in any Header field',
+            '| original:', JSON.stringify(original.slice(0, 80)),
+          );
+        }
       }
       return { title: 'Header' as const, data: { name, title, phone, email, location, links } };
     }
+
     const reps = replacementsBySec[s.title];
     if (!reps || reps.length === 0) return s;
 
     let content = s.content;
     for (const { original, finalText } of reps) {
-      if (content.includes(original)) {
-        content = content.split(original).join(finalText);
+      const { result, applied } = applyReplacement(content, original, finalText);
+      if (applied) {
+        content = result;
       } else {
-        console.warn('[applyEditsDirectly] edit not applied — original text not found in section', JSON.stringify(s.title), '| original:', JSON.stringify(original.slice(0, 80)));
+        console.warn(
+          '[applyEditsDirectly] edit not applied — original text not found in section',
+          JSON.stringify(s.title),
+          '| original:', JSON.stringify(original.slice(0, 80)),
+        );
       }
     }
     return { title: s.title, content };
@@ -64,6 +191,7 @@ function applyEditsDirectly(
 
 async function trimSectionsWithClaude(
   sections: ResumeSection[],
+  resolvedSuggestions: ResolvedSuggestion[],
 ): Promise<{ sections: ResumeSection[]; changes: TrimChange[] }> {
   const body = sections.filter((s): s is { title: string; content: string } => !('data' in s));
 
@@ -111,9 +239,38 @@ Call submit_trim with the condensed sections.`,
 
   const { sections: trimmedBody } = toolUse.input as { sections: { title: string; content: string }[] };
 
-  // Track what actually changed
+  // Build a per-section index of accepted-suggestion text that must survive trimming.
+  // Header edits are applied to the Header data object, not body content, so skip them.
+  const protectedBySec = new Map<string, string[]>();
+  for (const r of resolvedSuggestions) {
+    if (r.section === 'Header') continue;
+    if (!protectedBySec.has(r.section)) protectedBySec.set(r.section, []);
+    protectedBySec.get(r.section)!.push(r.finalText);
+  }
+
+  // For every trimmed section, verify that all accepted-edit text is still present
+  // verbatim. If any was altered, revert the whole section to its pre-trim content —
+  // we must never silently undo a change the user explicitly approved.
+  const verifiedBody = trimmedBody.map((t) => {
+    const spans = protectedBySec.get(t.title);
+    if (!spans || spans.length === 0) return t;
+    for (const span of spans) {
+      if (!t.content.includes(span)) {
+        const orig = body.find((s) => s.title === t.title);
+        console.warn(
+          '[trimSectionsWithClaude] accepted-edit text was modified during trim — reverting section to pre-trim content',
+          '| section:', JSON.stringify(t.title),
+          '| missing span:', JSON.stringify(span.slice(0, 80)),
+        );
+        return orig ?? t;
+      }
+    }
+    return t;
+  });
+
+  // Track what actually changed (using the verified output, not the raw trimmed output).
   const changes: TrimChange[] = [];
-  for (const t of trimmedBody) {
+  for (const t of verifiedBody) {
     const orig = body.find((s) => s.title === t.title);
     if (orig && orig.content !== t.content) {
       changes.push({ section: t.title, before: orig.content, after: t.content });
@@ -124,7 +281,7 @@ Call submit_trim with the condensed sections.`,
   const header = sections.find((s) => 'data' in s);
   const result: ResumeSection[] = [];
   if (header) result.push(header);
-  for (const s of trimmedBody) result.push({ title: s.title, content: s.content });
+  for (const s of verifiedBody) result.push({ title: s.title, content: s.content });
 
   return { sections: result, changes };
 }
@@ -225,7 +382,7 @@ export async function POST(req: NextRequest) {
       console.log('[generate-resume] page count undershoot — output is', finalPageCount, 'pages, baseline is', baselinePageCount);
     } else if (finalPageCount > baselinePageCount) {
       console.log('[generate-resume] starting trim pass');
-      const trimResult = await trimSectionsWithClaude(finalSections);
+      const trimResult = await trimSectionsWithClaude(finalSections, resolvedSuggestions);
       trimChanges = trimResult.changes;
       trimApplied = true;
 
