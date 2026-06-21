@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import type { DocxParagraphPosition } from '@/types';
 
+// pdf-parse references these browser globals even on the plain-text extraction path.
+// @napi-rs/canvas (which normally provides them) is excluded from the bundle (see next.config.js),
+// so without these stubs Node.js throws a ReferenceError before any parsing occurs.
+const _g = globalThis as Record<string, unknown>;
+if (typeof _g['DOMMatrix'] === 'undefined') _g['DOMMatrix'] = class DOMMatrix {};
+if (typeof _g['ImageData'] === 'undefined') _g['ImageData'] = class ImageData {};
+if (typeof _g['Path2D'] === 'undefined')    _g['Path2D']    = class Path2D {};
+
 const client = new Anthropic();
 
 // Build the system prompt, optionally injecting pre-extracted hyperlinks for docx files
