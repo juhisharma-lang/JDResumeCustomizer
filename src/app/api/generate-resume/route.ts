@@ -29,17 +29,32 @@ function applyEditsDirectly(
   }
 
   return sections.map((s) => {
-    if ('data' in s) return s; // Header: pass through unchanged
+    if ('data' in s) {
+      // Apply accepted edits to Header string fields the same way body sections are handled.
+      const reps = replacementsBySec['Header'];
+      if (!reps || reps.length === 0) return s;
+      let { name, title, phone, email, location, links } = s.data;
+      for (const { original, finalText } of reps) {
+        let applied = false;
+        if (name.includes(original)) { name = name.split(original).join(finalText); applied = true; }
+        if (title && title.includes(original)) { title = title.split(original).join(finalText); applied = true; }
+        if (phone && phone.includes(original)) { phone = phone.split(original).join(finalText); applied = true; }
+        if (email && email.includes(original)) { email = email.split(original).join(finalText); applied = true; }
+        if (location && location.includes(original)) { location = location.split(original).join(finalText); applied = true; }
+        if (!applied) console.warn('[applyEditsDirectly] edit not applied — original text not found in Header | original:', JSON.stringify(original.slice(0, 80)));
+      }
+      return { title: 'Header' as const, data: { name, title, phone, email, location, links } };
+    }
     const reps = replacementsBySec[s.title];
     if (!reps || reps.length === 0) return s;
 
     let content = s.content;
     for (const { original, finalText } of reps) {
       if (content.includes(original)) {
-        // Split/join avoids any regex interpretation of special characters in original text
         content = content.split(original).join(finalText);
+      } else {
+        console.warn('[applyEditsDirectly] edit not applied — original text not found in section', JSON.stringify(s.title), '| original:', JSON.stringify(original.slice(0, 80)));
       }
-      // If the exact string isn't found, skip silently — safer than a partial match
     }
     return { title: s.title, content };
   });
@@ -59,6 +74,7 @@ async function trimSectionsWithClaude(
 Rules:
 - Tighten verbose phrasing and remove filler words. Never remove entire bullet points unless they are purely decorative.
 - Keep all specific facts, metrics, dates, job titles, technologies, and company names.
+- Never invent facts, numbers, tools, metrics, or claims not present in the original text.
 - Do not reorder bullets or restructure sections.
 - Never use em dashes (—) or en dashes (–) in condensed text; use commas, periods, or semicolons instead.
 - Return every section even if you made no changes to it.
@@ -129,7 +145,7 @@ async function countPdfPages(pdfBuffer: Buffer): Promise<number> {
     // Fallback: count /Type /Page entries in the raw bytes
     console.warn('[countPdfPages] pdf-parse failed, using regex fallback:', err);
     const str = pdfBuffer.toString('latin1');
-    const matches = str.match(/\/Type\s*\/Page[^s]/g);
+    const matches = str.match(/\/Type\s*\/Page(?!s)/g);
     const count = matches ? matches.length : 1;
     console.log('[countPdfPages] regex page count:', count);
     return count;
@@ -144,7 +160,11 @@ async function renderToPdf(sections: ResumeSection[]): Promise<Buffer> {
   // renderToBuffer types require DocumentProps on the element; cast via unknown since
   // ATSTemplate is a wrapper component that returns a <Document> internally.
   const element = React.createElement(ATSTemplate, { sections }) as unknown as React.ReactElement<{ title?: string }>;
-  return renderToBuffer(element);
+  const RENDER_TIMEOUT_MS = 30_000;
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error('PDF rendering timed out after 30s')), RENDER_TIMEOUT_MS)
+  );
+  return Promise.race([renderToBuffer(element), timeout]);
 }
 
 // ─── route handler ────────────────────────────────────────────────────────────
@@ -198,8 +218,12 @@ export async function POST(req: NextRequest) {
     let trimChanges: TrimChange[] = [];
     let pageCountExceeded = false;
 
-    console.log('[generate-resume] trim needed:', finalPageCount > baselinePageCount);
-    if (finalPageCount > baselinePageCount) {
+    console.log('[generate-resume] trim needed:', finalPageCount > baselinePageCount, '| undershoot:', finalPageCount < baselinePageCount);
+    if (finalPageCount < baselinePageCount) {
+      // Output came out shorter than the original — trimming cannot recover pages, so flag immediately.
+      pageCountExceeded = true;
+      console.log('[generate-resume] page count undershoot — output is', finalPageCount, 'pages, baseline is', baselinePageCount);
+    } else if (finalPageCount > baselinePageCount) {
       console.log('[generate-resume] starting trim pass');
       const trimResult = await trimSectionsWithClaude(finalSections);
       trimChanges = trimResult.changes;
@@ -209,9 +233,9 @@ export async function POST(req: NextRequest) {
       finalPageCount = await countPdfPages(pdfBuffer);
       console.log('[generate-resume] page count after trim:', finalPageCount, '| sections changed:', trimChanges.length);
 
-      if (finalPageCount > baselinePageCount) {
+      if (finalPageCount !== baselinePageCount) {
         pageCountExceeded = true;
-        console.log('[generate-resume] trim did not resolve overflow — still at', finalPageCount, 'pages');
+        console.log('[generate-resume] trim did not resolve page count mismatch — output is', finalPageCount, 'pages, baseline is', baselinePageCount);
       }
     }
 

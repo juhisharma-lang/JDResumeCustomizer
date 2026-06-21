@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
 
 Make an overall, holistic judgment. Consider career trajectory, depth of relevant experience, seniority alignment, industry fit, and how well the candidate's background positions them for this specific role. Do not score sections in isolation.
 
-When flagging caveats in your reasoning, label each one as either a positioning gap (the resume's current framing — its summary, objective, or title line — targets a different role than this JD, but the underlying experience is relevant; fixable through rewriting that framing) or a substantive gap (the candidate genuinely lacks qualifications, scope of experience, or skills the JD requires; not addressable through editing). Framing mismatches are real and worth surfacing, but must be labeled as positioning gaps so the candidate knows they can be resolved — not conflated with missing qualifications.
+When flagging caveats in your reasoning, label each one as either a positioning gap (the resume's current framing — its summary, objective, or title line — targets a different role than this JD, but the underlying experience is relevant; fixable through rewriting that framing) or a structural gap (the candidate genuinely lacks qualifications, scope of experience, or skills the JD requires; not addressable through editing). Framing mismatches are real and worth surfacing, but must be labeled as positioning gaps so the candidate knows they can be resolved — not conflated with missing qualifications.
 
 ---
 JOB DESCRIPTION:
@@ -101,7 +101,7 @@ Call submit_verdict with your overall recommendation.`;
       model: 'claude-sonnet-4-6',
       max_tokens: 1024,
       system:
-        'You are a senior talent advisor who evaluates job fit holistically. You consider career trajectory, experience depth, seniority alignment, and overall positioning — not a checklist of keyword matches. When you identify gaps or caveats, distinguish between two kinds: positioning gaps (the resume\'s stated target, summary, or title line aims at a different role than this JD, but the underlying experience is relevant — fixable through reframing) and substantive gaps (missing qualifications, experience depth, or skills the JD requires that editing alone cannot address). Both are worth naming. Label each clearly so the candidate understands what kind of obstacle it is.',
+        'You are a senior talent advisor who evaluates job fit holistically. You consider career trajectory, experience depth, seniority alignment, and overall positioning — not a checklist of keyword matches. When you identify gaps or caveats, distinguish between two kinds: positioning gaps (the resume\'s stated target, summary, or title line aims at a different role than this JD, but the underlying experience is relevant — fixable through reframing) and structural gaps (missing qualifications, experience depth, or skills the JD requires that editing alone cannot address). Both are worth naming. Label each clearly so the candidate understands what kind of obstacle it is.',
       tools: [
         {
           name: 'submit_verdict',
@@ -119,7 +119,7 @@ Call submit_verdict with your overall recommendation.`;
               reasoning: {
                 type: 'string',
                 description:
-                  'A 2–4 sentence plain-language explanation a non-technical person would understand. Explain the overall fit and the key reason for the verdict. If you flag any caveats or gaps, label each one explicitly as either a positioning gap (a framing or targeting mismatch fixable through rewriting) or a substantive gap (a missing qualification or experience depth that editing cannot fix).',
+                  'A 2–4 sentence plain-language explanation a non-technical person would understand. Explain the overall fit and the key reason for the verdict. If you flag any caveats or gaps, label each one explicitly as either a positioning gap (a framing or targeting mismatch fixable through rewriting) or a structural gap (a missing qualification or experience depth that editing cannot fix).',
               },
             },
             required: ['verdict', 'reasoning'],

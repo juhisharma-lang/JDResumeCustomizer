@@ -51,6 +51,7 @@ export default function ResumeUploadScreen({
     }
 
     let cancelled = false;
+    const controller = new AbortController();
 
     async function parse() {
       setParseStatus('loading');
@@ -61,7 +62,7 @@ export default function ResumeUploadScreen({
       form.append('file', file!);
 
       try {
-        const res = await fetch('/api/parse-resume', { method: 'POST', body: form });
+        const res = await fetch('/api/parse-resume', { method: 'POST', body: form, signal: controller.signal });
         const data = await res.json();
 
         if (cancelled) return;
@@ -87,7 +88,10 @@ export default function ResumeUploadScreen({
     }
 
     parse();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [file]);
 

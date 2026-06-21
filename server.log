@@ -1,0 +1,65 @@
+
+> jd-resume-customizer@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 5.3s
+ ○ Compiling /api/parse-resume ...
+ ✓ Compiled /api/parse-resume in 3.4s (532 modules)
+[parse-resume] outer catch: AuthenticationError: 401 {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"},"request_id":"req_011CcGSTAJk8w27eYLtiv9M3"}
+    at APIError.generate (webpack-internal:///(rsc)/./node_modules/@anthropic-ai/sdk/core/error.mjs:60:20)
+    at Anthropic.makeStatusError (webpack-internal:///(rsc)/./node_modules/@anthropic-ai/sdk/client.mjs:404:71)
+    at Anthropic.makeRequest (webpack-internal:///(rsc)/./node_modules/@anthropic-ai/sdk/client.mjs:628:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async POST (webpack-internal:///(rsc)/./src/app/api/parse-resume/route.ts:203:26)
+    at async /Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:53446
+    at async e_.execute (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:44747)
+    at async e_.handle (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/compiled/next-server/app-route.runtime.dev.js:6:54700)
+    at async doRender (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/base-server.js:1377:42)
+    at async cacheEntry.responseCache.get.routeKind (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/base-server.js:1599:28)
+    at async DevServer.renderToResponseWithComponentsImpl (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/base-server.js:1507:28)
+    at async DevServer.renderPageComponent (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/base-server.js:1924:24)
+    at async DevServer.renderToResponseImpl (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/base-server.js:1962:32)
+    at async DevServer.pipeImpl (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/base-server.js:920:25)
+    at async NextNodeServer.handleCatchallRenderRequest (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/next-server.js:272:17)
+    at async DevServer.handleRequestImpl (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/base-server.js:816:17)
+    at async /Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/dev/next-dev-server.js:339:20
+    at async Span.traceAsyncFn (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/trace/trace.js:154:20)
+    at async DevServer.handleRequest (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/dev/next-dev-server.js:336:24)
+    at async invokeRender (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/lib/router-server.js:174:21)
+    at async handleRequest (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/lib/router-server.js:353:24)
+    at async requestHandlerImpl (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/lib/router-server.js:377:13)
+    at async Server.requestListener (/Users/juhisharma/Documents/GitHub/JDResumeCustomizer/node_modules/next/dist/server/lib/start-server.js:141:13) {
+  status: 401,
+  headers: Headers {
+    date: 'Sun, 21 Jun 2026 12:54:42 GMT',
+    'content-type': 'application/json',
+    'transfer-encoding': 'chunked',
+    connection: 'keep-alive',
+    'x-should-retry': 'false',
+    'request-id': 'req_011CcGSTAJk8w27eYLtiv9M3',
+    'strict-transport-security': 'max-age=31536000; includeSubDomains; preload',
+    server: 'cloudflare',
+    'content-encoding': 'gzip',
+    vary: 'Accept-Encoding',
+    'set-cookie': '_cfuvid=xHFXhh0uFy9Vv3O5lnopxPIy7W2TZpro13hkHzh2JjI-1782046482.5030434-1.0.1.1-g5XiqiLtOba3nw98XsMhbKwhEeOUXx6orVVV6W6Tjfs; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.anthropic.com',
+    'x-robots-tag': 'none',
+    'cf-cache-status': 'DYNAMIC',
+    'content-security-policy': "default-src 'none'; frame-ancestors 'none'",
+    'cf-ray': 'a0f329d3ae99fddf-SIN'
+  },
+  requestID: 'req_011CcGSTAJk8w27eYLtiv9M3',
+  error: {
+    type: 'error',
+    error: { type: 'authentication_error', message: 'invalid x-api-key' },
+    request_id: 'req_011CcGSTAJk8w27eYLtiv9M3'
+  },
+  type: 'authentication_error'
+}
+ POST /api/parse-resume 500 in 4830ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: Unable to snapshot resolve dependencies
+[?25h

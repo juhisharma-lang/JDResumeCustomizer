@@ -4,52 +4,77 @@ import type { ResumeSection, ResumeHeaderData } from '@/types';
 
 // Single-column ATS-safe template. No tables, no text boxes, no graphics.
 // All fonts are PDF built-ins so no network fetch is needed at render time.
+
+// Vertical-rhythm tokens — one place to tune all spacing.
+// Tightened vs the prior version to offset the two added rules (header + per-section).
+const sp = {
+  afterName: 2,         // name → title
+  afterTitle: 2,        // title → contact line
+  afterContact: 3,      // contact line → header rule
+  afterHeaderRule: 5,   // header rule → first section
+  afterSection: 8,      // bottom gap between sections (was 10)
+  headingToRule: 2,     // section heading text → its rule
+  afterSectionRule: 4,  // section rule → first content line
+  lineGap: 1.5,         // between bullet/plain lines (unchanged)
+  spacer: 3,            // blank-line spacer height (was 4)
+};
+
 const styles = StyleSheet.create({
   page: {
-    paddingHorizontal: 54, // ~0.75 inch
+    paddingHorizontal: 54,  // ~0.75 inch
     paddingVertical: 54,
-    fontFamily: 'Helvetica',
+    fontFamily: 'Times-Roman',
     fontSize: 10,
     lineHeight: 1.35,
     color: '#1a1a1a',
   },
   name: {
     fontSize: 18,
-    fontFamily: 'Helvetica-Bold',
-    marginBottom: 3,
+    fontFamily: 'Times-Bold',
+    textAlign: 'center',
+    marginBottom: sp.afterName,
   },
   professionalTitle: {
     fontSize: 11,
-    marginBottom: 4,
+    textAlign: 'center',
     color: '#333333',
+    marginBottom: sp.afterTitle,
   },
   contactLine: {
     fontSize: 9,
+    textAlign: 'center',
     color: '#444444',
-    marginBottom: 16,
+    marginBottom: sp.afterContact,
+  },
+  headerRule: {
+    borderBottomWidth: 0.75,
+    borderBottomColor: '#1a1a1a',
+    marginBottom: sp.afterHeaderRule,
   },
   sectionContainer: {
-    marginBottom: 10,
+    marginBottom: sp.afterSection,
   },
   sectionTitle: {
     fontSize: 10,
-    fontFamily: 'Helvetica-Bold',
+    fontFamily: 'Times-Bold',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    textAlign: 'center',
+    marginBottom: sp.headingToRule,
+  },
+  sectionRule: {
     borderBottomWidth: 0.75,
     borderBottomColor: '#1a1a1a',
-    paddingBottom: 2,
-    marginBottom: 5,
+    marginBottom: sp.afterSectionRule,
   },
   line: {
     fontSize: 10,
-    marginBottom: 1.5,
+    marginBottom: sp.lineGap,
   },
   bulletRow: {
     flexDirection: 'row',
-    marginBottom: 1.5,
+    marginBottom: sp.lineGap,
     paddingLeft: 4,
-    // wrap: false applied on the View element below — keeps marker + text together
   },
   bulletMark: {
     fontSize: 10,
@@ -61,7 +86,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   spacer: {
-    height: 4,
+    height: sp.spacer,
+  },
+  tabbedRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: sp.lineGap,
+  },
+  tabbedLeft: {
+    fontSize: 10,
+    flex: 1,
+  },
+  tabbedRight: {
+    fontSize: 10,
+    flexShrink: 0,
+    textAlign: 'right',
   },
 });
 
@@ -83,7 +122,7 @@ function ContactLine({ data }: { data: ResumeHeaderData }) {
     <Text style={styles.contactLine}>
       {parts.map((part, i) => (
         <React.Fragment key={i}>
-          {i > 0 ? '   |   ' : ''}
+          {i > 0 ? ' • ' : ''}
           {part.kind === 'link' ? (
             <Link src={part.url} style={{ color: '#444444', textDecoration: 'none' }}>
               {part.label}
@@ -112,6 +151,17 @@ function SectionContent({ content }: { content: string }) {
             </View>
           );
         }
+        const tabIdx = line.indexOf('\t');
+        if (tabIdx !== -1) {
+          const left = line.slice(0, tabIdx).trimEnd();
+          const right = line.slice(tabIdx + 1).trimStart();
+          return (
+            <View key={i} style={styles.tabbedRow} wrap={false}>
+              <Text style={styles.tabbedLeft}>{left}</Text>
+              <Text style={styles.tabbedRight}>{right}</Text>
+            </View>
+          );
+        }
         return <Text key={i} style={styles.line}>{line}</Text>;
       })}
     </View>
@@ -130,12 +180,14 @@ export function ATSTemplate({ sections }: { sections: ResumeSection[] }) {
             <Text style={styles.name}>{header.data.name}</Text>
             {header.data.title && <Text style={styles.professionalTitle}>{header.data.title}</Text>}
             <ContactLine data={header.data} />
+            <View style={styles.headerRule} />
           </View>
         )}
 
         {body.map((section, i) => (
           <View key={i} style={styles.sectionContainer}>
             <Text style={styles.sectionTitle}>{section.title}</Text>
+            <View style={styles.sectionRule} />
             <SectionContent content={section.content} />
           </View>
         ))}

@@ -8,7 +8,7 @@ const client = new Anthropic();
 function buildSystemPrompt(extractedLinks?: { label: string; url: string }[]): string {
   const linksInstruction = extractedLinks && extractedLinks.length > 0
     ? `- "links": an array of { "label": string, "url": string | null } objects for contact/social links only (LinkedIn, Portfolio, GitHub, personal website, etc.). The following hyperlinks were extracted directly from the document source and their URLs are exact — use them verbatim for this field only:\n${extractedLinks.map(l => `  { "label": "${l.label}", "url": "${l.url}" }`).join('\n')}\n  Match each contact/social link label (e.g. "LinkedIn", "Portfolio", "GitHub") to the closest entry above and use that url value. Only set "url" to null for a contact link type that does not appear in this list at all. Do NOT use this list to modify or append URL text to any other section's content — all section content must be taken from the raw extracted text verbatim.`
-    : `- "links": an array of { "label": string, "url": string | null } objects, one per link found (LinkedIn, portfolio, GitHub, personal website, etc.). Use the actual URL from the source text. The source text may contain markdown-style links in the form [Label](https://...) — when you see this pattern, use the text inside the square brackets as the label and the URL inside the parentheses as the url value. Only set "url" to null when no URL genuinely exists anywhere in the source text for that link — never write an explanatory phrase in place of a URL.`;
+    : `- "links": an array of { "label": string, "url": string | null } objects, one per link found (LinkedIn, portfolio, GitHub, personal website, etc.). Use the actual URL from the source text. The source text may contain markdown-style links in the form [Label](https://...) — when you see this pattern, use the text inside the square brackets as the label and the URL inside the parentheses as the url value. Only set "url" to null when no URL genuinely exists anywhere in the source text for that link — never write an explanatory phrase in place of a URL, and never guess or invent a URL that is not explicitly present in the source text.`;
 
   return `You are a resume parser. You receive raw text extracted from a resume file.
 Organize the content into clearly labeled, standard ATS-friendly sections.
@@ -105,8 +105,15 @@ function extractLinksFromHtml(html: string): { label: string; url: string }[] {
   let match: RegExpExecArray | null;
   while ((match = anchorRe.exec(html)) !== null) {
     const url = match[1].trim();
-    // Strip any nested HTML tags from the label text
-    const label = match[2].replace(/<[^>]+>/g, '').trim();
+    // Strip nested HTML tags then unescape HTML entities (same set handled in htmlToPlainText)
+    const label = match[2]
+      .replace(/<[^>]+>/g, '')
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+      .trim();
     if (url && label) links.push({ label, url });
   }
   return links;
@@ -128,6 +135,12 @@ export async function POST(req: NextRequest) {
   }
 
   // Detect file type from extension and MIME (extension wins since MIME can lie on drag-drop)
+  if (!file.name || !file.name.includes('.')) {
+    return NextResponse.json(
+      { error: 'invalid_request', message: 'The uploaded file must have a .pdf or .docx extension.' },
+      { status: 400 }
+    );
+  }
   const ext = file.name.split('.').pop()?.toLowerCase();
   const isPdf =
     ext === 'pdf' || file.type === 'application/pdf';
@@ -180,9 +193,7 @@ export async function POST(req: NextRequest) {
       // Derive plain text from HTML so list items keep their "- " bullet markers
       rawText = htmlToPlainText(htmlValue);
 
-      // Estimate page count from word count (resumes average ~500 words per page)
-      const wordCount = rawText.trim().split(/\s+/).filter(Boolean).length;
-      pageCount = Math.max(1, Math.round(wordCount / 500));
+      // pageCount for DOCX will be computed after Claude structures the sections (see below);
 
       // Capture heading positions for the future docx preservation service
       paragraphPositions = extractDocxParagraphPositions(htmlValue);
@@ -231,8 +242,31 @@ export async function POST(req: NextRequest) {
     const jsonText = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim();
     const structured = JSON.parse(jsonText);
 
+    // For DOCX files, compute real page count by rendering the structured sections through
+    // the same ATS template and pdf-parse pipeline used in generate-resume. This replaces
+    // the word-count heuristic so the baseline used for overflow detection is accurate.
+    if (fileType === 'docx' && Array.isArray(structured?.sections)) {
+      try {
+        const React = (await import('react')).default;
+        const { renderToBuffer } = await import('@react-pdf/renderer');
+        const { ATSTemplate } = await import('@/lib/atsTemplate');
+        const el = React.createElement(ATSTemplate, { sections: structured.sections }) as unknown as React.ReactElement<{ title?: string }>;
+        const timeout = new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('PDF page-count render timed out')), 30_000)
+        );
+        const pdfBuf = await Promise.race([renderToBuffer(el), timeout]);
+        const { PDFParse } = await import('pdf-parse');
+        const parse = PDFParse as unknown as (buf: Buffer) => Promise<{ numpages?: number }>;
+        const rendered = await parse(pdfBuf);
+        pageCount = rendered.numpages ?? pageCount;
+      } catch (err) {
+        console.warn('[parse-resume] DOCX real page count render failed, keeping estimate of 1:', err);
+      }
+    }
+
     return NextResponse.json({ structured, fileType, pageCount, paragraphPositions });
-  } catch {
+  } catch (e) {
+    console.error('[parse-resume] outer catch:', e);
     return NextResponse.json(
       {
         error: 'claude_error',
