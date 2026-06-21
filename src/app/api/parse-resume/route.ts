@@ -177,6 +177,9 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
 
     if (isPdf) {
+      // Disable the pdfjs worker — serverless functions gain nothing from a separate worker
+      // thread and pdf.worker.mjs is not included in the deployment bundle.
+      (await import('pdfjs-dist')).GlobalWorkerOptions.workerSrc = '';
       // pdf-parse v2 API: PDFParse class with { data } options (see next.config.js for webpack exclusion)
       const { PDFParse } = await import('pdf-parse');
       const parser = new PDFParse({ data: buffer });
@@ -264,6 +267,7 @@ export async function POST(req: NextRequest) {
           setTimeout(() => reject(new Error('PDF page-count render timed out')), 30_000)
         );
         const pdfBuf = await Promise.race([renderToBuffer(el), timeout]);
+        (await import('pdfjs-dist')).GlobalWorkerOptions.workerSrc = '';
         const { PDFParse } = await import('pdf-parse');
         const parse = PDFParse as unknown as (buf: Buffer) => Promise<{ numpages?: number }>;
         const rendered = await parse(pdfBuf);
