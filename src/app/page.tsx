@@ -22,7 +22,13 @@ import SuggestionsScreen from '@/components/screens/SuggestionsScreen';
 import FinalReviewScreen from '@/components/screens/FinalReviewScreen';
 
 export default function Home() {
-  const [screen, setScreen] = useState<Screen>('start');
+  const [screen, setScreen] = useState<Screen>(() => {
+    if (typeof window !== 'undefined') {
+      const count = parseInt(localStorage.getItem('resumeSync_runCount') ?? '0', 10);
+      if (count >= 3) return 'limit-reached';
+    }
+    return 'start';
+  });
 
   // JD input state
   const [jdMode, setJdMode] = useState<JDMode>('text');
@@ -159,10 +165,36 @@ export default function Home() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    const prev = parseInt(localStorage.getItem('resumeSync_runCount') ?? '0', 10);
+    localStorage.setItem('resumeSync_runCount', String(prev + 1));
   }, [generateResult]);
 
   return (
     <main className="min-h-screen">
+      {screen === 'limit-reached' && (
+        <div className="min-h-screen bg-surface text-on-background flex flex-col overflow-hidden">
+          <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 -left-20 w-80 h-80 bg-secondary-container/30 rounded-full blur-[100px] -translate-y-1/2" />
+          </div>
+          <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-16 bg-surface/80 backdrop-blur-md">
+            <span className="text-headline-md font-bold text-primary">ResumeSync</span>
+          </header>
+          <div className="flex-1 flex flex-col items-center justify-center relative z-10 px-6 text-center gap-6 pt-16">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
+            </div>
+            <h2 className="text-headline-lg-mobile font-bold text-on-background">Demo limit reached</h2>
+            <p className="text-body-lg text-on-surface-variant max-w-xs leading-relaxed">
+              {"You've used your 3 free runs on this demo. Thanks for trying it out."}
+            </p>
+            <p className="text-body-md text-on-surface-variant/70 max-w-xs leading-relaxed">
+              {"Found this useful? I'd love to hear what worked and what didn't. Reach out on LinkedIn and let's talk about it."}
+            </p>
+          </div>
+        </div>
+      )}
+
       {screen === 'start' && (
         <StartScreen onContinue={() => go('jd-input')} />
       )}

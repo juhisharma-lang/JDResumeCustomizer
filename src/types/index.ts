@@ -6,7 +6,8 @@ export type Screen =
   | 'analyzing'
   | 'verdict'
   | 'suggestions'
-  | 'final-review';
+  | 'final-review'
+  | 'limit-reached';
 
 export type JDMode = 'text' | 'url';
 export type FormatPreference = 'ats' | 'original';
