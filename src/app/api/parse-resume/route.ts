@@ -217,7 +217,8 @@ export async function POST(req: NextRequest) {
         );
       }
     }
-  } catch {
+  } catch (e) {
+    console.error('[parse-resume] extraction failed:', e);
     return NextResponse.json(
       {
         error: 'parse_failed',
