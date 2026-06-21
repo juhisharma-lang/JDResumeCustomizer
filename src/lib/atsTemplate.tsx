@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 1.5,
     paddingLeft: 4,
+    // wrap: false applied on the View element below — keeps marker + text together
   },
   bulletMark: {
     fontSize: 10,
@@ -105,7 +106,7 @@ function SectionContent({ content }: { content: string }) {
         const isBullet = /^\s*[-•]\s+/.test(line);
         if (isBullet) {
           return (
-            <View key={i} style={styles.bulletRow}>
+            <View key={i} style={styles.bulletRow} wrap={false}>
               <Text style={styles.bulletMark}>•</Text>
               <Text style={styles.bulletBody}>{line.replace(/^\s*[-•]\s+/, '')}</Text>
             </View>

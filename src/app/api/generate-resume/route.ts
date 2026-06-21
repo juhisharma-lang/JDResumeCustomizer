@@ -166,12 +166,21 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Step 1: Render the original (unedited) sections to get the ATS baseline page count.
-    // This is an ATS-to-ATS comparison so the baseline is always accurate regardless of
-    // how the uploaded file estimated its own page count.
-    const baselinePdfBuffer = await renderToPdf(resume.sections);
-    const baselinePageCount = await countPdfPages(baselinePdfBuffer);
-    console.log('[generate-resume] baseline page count:', baselinePageCount);
+    // Step 1: Use the page count captured from the original uploaded file during parsing.
+    // This is the true user-facing baseline — comparing against a re-render of the same
+    // content through the ATS template would only detect drift within the template itself,
+    // not overflow relative to what the user actually uploaded.
+    const baselinePageCount = resume.pageCount;
+    if (!baselinePageCount || baselinePageCount <= 0) {
+      // pageCount is typed as required number but could be 0 if the parser failed to detect
+      // pages (e.g. a DOCX whose page count is estimated, not read from file metadata).
+      // Log prominently so this is never a silent fallback to a wrong baseline.
+      console.warn(
+        '[generate-resume] resume.pageCount is missing or zero — overflow detection will be unreliable.',
+        { fileType: resume.fileType, pageCount: resume.pageCount }
+      );
+    }
+    console.log('[generate-resume] baseline page count (from parsed file):', baselinePageCount);
 
     // Step 2: Apply accepted edits via deterministic string replacement (no Claude).
     const finalSections: ResumeSection[] =
@@ -179,11 +188,9 @@ export async function POST(req: NextRequest) {
         ? resume.sections
         : applyEditsDirectly(resume.sections, resolvedSuggestions);
 
-    // Step 3: Render with edits. Reuse the baseline buffer when there are no edits.
-    let pdfBuffer =
-      resolvedSuggestions.length === 0 ? baselinePdfBuffer : await renderToPdf(finalSections);
-    let finalPageCount =
-      resolvedSuggestions.length === 0 ? baselinePageCount : await countPdfPages(pdfBuffer);
+    // Step 3: Render with edits.
+    let pdfBuffer = await renderToPdf(finalSections);
+    let finalPageCount = await countPdfPages(pdfBuffer);
     console.log('[generate-resume] page count after applying edits:', finalPageCount, '| edits applied:', resolvedSuggestions.length);
 
     // Step 4: Trim pass if the edited document exceeds the ATS baseline page count.
