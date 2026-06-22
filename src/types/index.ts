@@ -39,18 +39,17 @@ export type ResumeSection =
   | { title: 'Header'; data: ResumeHeaderData }
   | { title: string; content: string };
 
-// Tracks where each section heading falls in the original DOCX XML paragraph order.
-// Used by the future python-docx preservation service to locate paragraphs for in-place edits.
-export interface DocxParagraphPosition {
-  sectionHeading: string; // original heading text as it appears in the document
-  paragraphIndex: number; // 0-based estimated paragraph index in document XML
-}
+// v2 (keep-original-format path): paragraph positions for the future python-docx service.
+// export interface DocxParagraphPosition {
+//   sectionHeading: string;
+//   paragraphIndex: number;
+// }
 
 export interface ParsedResume {
   sections: ResumeSection[];
   fileType: 'pdf' | 'docx';
   pageCount: number;
-  paragraphPositions?: DocxParagraphPosition[]; // docx uploads only
+  // v2 (keep-original-format path): paragraphPositions?: DocxParagraphPosition[];
 }
 
 // A suggestion after the user has reviewed it — only accepted and user-written ones are sent to generate-resume.

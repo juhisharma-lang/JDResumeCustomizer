@@ -78,7 +78,7 @@ export default function ResumeUploadScreen({
           sections: data.structured.sections,
           fileType: data.fileType,
           pageCount: data.pageCount ?? 1,
-          paragraphPositions: data.paragraphPositions,
+          // v2 (keep-original-format path): paragraphPositions: data.paragraphPositions,
         });
       } catch {
         if (cancelled) return;

@@ -3,7 +3,7 @@
 import type { FormatPreference } from '@/types';
 
 interface Props {
-  file: File | null;
+  file?: File | null;
   preference: FormatPreference | null;
   onPreferenceChange: (p: FormatPreference) => void;
   onContinue: () => void;
@@ -86,9 +86,9 @@ function FormatCard({
       )}
 
       {disabled && disabledNote && (
-        <div className="mt-4 p-3 bg-error-container/20 rounded-lg flex items-center gap-2 border border-error-container/30">
-          <span className="material-symbols-outlined text-error text-sm leading-none shrink-0">info</span>
-          <p className="text-body-sm text-on-error-container leading-tight">{disabledNote}</p>
+        <div className="mt-4 p-3 bg-surface-container rounded-lg flex items-start gap-2 border border-outline-variant/40">
+          <span className="material-symbols-outlined text-outline text-sm leading-none shrink-0 mt-0.5">schedule</span>
+          <p className="text-body-sm text-on-surface-variant leading-tight">{disabledNote}</p>
         </div>
       )}
     </button>
@@ -96,14 +96,11 @@ function FormatCard({
 }
 
 export default function FormatPreferenceScreen({
-  file,
   preference,
   onPreferenceChange,
   onContinue,
   onBack,
 }: Props) {
-  const fileIsPDF = file?.type === 'application/pdf';
-
   return (
     <div className="min-h-screen bg-surface text-on-surface flex flex-col">
 
@@ -143,10 +140,10 @@ export default function FormatPreferenceScreen({
             icon="history_edu"
             label="Keep My Original Format"
             description="Maintain your current fonts, spacing, and personal branding layout while we update the content."
-            selected={preference === 'original'}
-            disabled={fileIsPDF}
-            disabledNote="Requires a .docx upload."
-            onSelect={() => onPreferenceChange('original')}
+            selected={false}
+            disabled={true}
+            disabledNote="Coming in v2. For now, copy the suggested edits manually into your own formatted file."
+            onSelect={() => {}}
           />
         </div>
 

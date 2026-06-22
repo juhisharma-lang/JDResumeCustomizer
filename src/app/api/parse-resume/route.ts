@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import type { DocxParagraphPosition } from '@/types';
+// v2 (keep-original-format path): import type { DocxParagraphPosition } from '@/types';
 
 // pdf-parse references these browser globals even on the plain-text extraction path.
 // @napi-rs/canvas (which normally provides them) is excluded from the bundle (see next.config.js),
@@ -71,24 +71,22 @@ Respond with a valid JSON object in exactly this format with no preamble or expl
 }`;
 }
 
-// Walk mammoth's HTML to find heading elements and estimate their paragraph index in the original DOCX.
-// The index is approximate (each block-level tag counts as one paragraph), which is good enough
-// for the future python-docx service to narrow down where to look.
-function extractDocxParagraphPositions(html: string): DocxParagraphPosition[] {
-  const positions: DocxParagraphPosition[] = [];
-  const headingRe = /<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi;
-  let match: RegExpExecArray | null;
-  while ((match = headingRe.exec(html)) !== null) {
-    const beforeHeading = html.slice(0, match.index);
-    // Count preceding block-level opening tags as an approximate paragraph index
-    const preceding = beforeHeading.match(/<(h[1-6]|p|li)[>\s]/gi) ?? [];
-    const headingText = match[2].replace(/<[^>]+>/g, '').trim();
-    if (headingText) {
-      positions.push({ sectionHeading: headingText, paragraphIndex: preceding.length });
-    }
-  }
-  return positions;
-}
+// v2 (keep-original-format path): paragraph position tracking for the future python-docx service.
+// Restore when the in-place docx editing service is built.
+// function extractDocxParagraphPositions(html: string): DocxParagraphPosition[] {
+//   const positions: DocxParagraphPosition[] = [];
+//   const headingRe = /<h([1-6])[^>]*>([\s\S]*?)<\/h\1>/gi;
+//   let match: RegExpExecArray | null;
+//   while ((match = headingRe.exec(html)) !== null) {
+//     const beforeHeading = html.slice(0, match.index);
+//     const preceding = beforeHeading.match(/<(h[1-6]|p|li)[>\s]/gi) ?? [];
+//     const headingText = match[2].replace(/<[^>]+>/g, '').trim();
+//     if (headingText) {
+//       positions.push({ sectionHeading: headingText, paragraphIndex: preceding.length });
+//     }
+//   }
+//   return positions;
+// }
 
 // Convert mammoth HTML to plain text, preserving list item bullets as "- "
 function htmlToPlainText(html: string): string {
@@ -172,7 +170,7 @@ export async function POST(req: NextRequest) {
   let rawText: string;
   let pageCount = 1;
   let docxLinks: { label: string; url: string }[] | undefined;
-  let paragraphPositions: DocxParagraphPosition[] | undefined;
+  // v2 (keep-original-format path): let paragraphPositions: DocxParagraphPosition[] | undefined;
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
 
@@ -206,8 +204,7 @@ export async function POST(req: NextRequest) {
 
       // pageCount for DOCX will be computed after Claude structures the sections (see below);
 
-      // Capture heading positions for the future docx preservation service
-      paragraphPositions = extractDocxParagraphPositions(htmlValue);
+      // v2 (keep-original-format path): paragraphPositions = extractDocxParagraphPositions(htmlValue);
 
       // Only extract links from the header area (before the first section heading)
       // so project inline hyperlinks never leak into the Claude links list
@@ -277,7 +274,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({ structured, fileType, pageCount, paragraphPositions });
+    return NextResponse.json({ structured, fileType, pageCount });
   } catch (e) {
     console.error('[parse-resume] outer catch:', e);
     return NextResponse.json(
