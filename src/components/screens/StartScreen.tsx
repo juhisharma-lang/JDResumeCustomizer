@@ -17,7 +17,6 @@ export default function StartScreen({ onContinue }: Props) {
       {/* Fixed top header */}
       <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 h-16 bg-surface/80 backdrop-blur-md">
         <span className="text-headline-md font-bold text-primary">ResumeSync</span>
-        <span className="material-symbols-outlined text-primary opacity-60 cursor-pointer select-none text-2xl">help_outline</span>
       </header>
 
       {/* Main content */}
