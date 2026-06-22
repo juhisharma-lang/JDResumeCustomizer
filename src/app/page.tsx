@@ -39,8 +39,8 @@ export default function Home() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [parsedResume, setParsedResume] = useState<ParsedResume | null>(null);
 
-  // Format preference state
-  const [formatPreference, setFormatPreference] = useState<FormatPreference | null>(null);
+  // Format preference state — defaulting to 'ats' since original-format is not yet built
+  const [formatPreference, setFormatPreference] = useState<FormatPreference | null>('ats');
 
   // Verdict state — populated by the analyzing screen via the verdict API
   const [verdict, setVerdict] = useState<Verdict>('apply');

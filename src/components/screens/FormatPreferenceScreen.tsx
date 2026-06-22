@@ -142,7 +142,7 @@ export default function FormatPreferenceScreen({
             description="Maintain your current fonts, spacing, and personal branding layout while we update the content."
             selected={false}
             disabled={true}
-            disabledNote="Coming in v2. For now, copy the suggested edits manually into your own formatted file."
+            disabledNote="Coming in v2. For now, copy the suggested edits into your own file to keep your formatting."
             onSelect={() => {}}
           />
         </div>

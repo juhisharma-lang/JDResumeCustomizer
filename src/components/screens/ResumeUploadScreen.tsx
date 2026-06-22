@@ -294,7 +294,7 @@ export default function ResumeUploadScreen({
           {/* File format note */}
           <p className="text-body-sm text-on-surface-variant leading-relaxed">
             <span className="material-symbols-outlined text-base leading-none align-middle mr-1" style={{ fontVariationSettings: "'FILL' 1" }}>info</span>
-            Uploading a <strong>.docx file</strong> lets you keep your original formatting later. PDF uploads will use the ATS optimized template.
+            All resumes are output as an ATS optimized PDF. Original format preservation is coming in v2.
           </p>
 
           {/* AI pro tip card */}
