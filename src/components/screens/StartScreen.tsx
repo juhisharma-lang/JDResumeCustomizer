@@ -40,23 +40,10 @@ export default function StartScreen({ onContinue }: Props) {
 
           {/* Sub-headline */}
           <p className="text-body-lg text-on-surface-variant max-w-xs leading-relaxed">
-            Optimize your resume for any job description in seconds.
+            Optimize your resume for any job description in minutes.
           </p>
         </div>
 
-        {/* Feature bento tiles */}
-        <div className="grid grid-cols-2 gap-3 mb-8">
-          <div className="p-4 bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm border border-white/40">
-            <span className="material-symbols-outlined text-primary mb-2 block text-2xl">task_alt</span>
-            <p className="text-label-md font-bold text-on-surface mb-0.5">98% Match</p>
-            <p className="text-body-sm text-on-surface-variant leading-tight">ATS precision</p>
-          </div>
-          <div className="p-4 bg-white/70 backdrop-blur-sm rounded-2xl shadow-sm border border-white/40">
-            <span className="material-symbols-outlined text-secondary mb-2 block text-2xl">bolt</span>
-            <p className="text-label-md font-bold text-on-surface mb-0.5">Instant</p>
-            <p className="text-body-sm text-on-surface-variant leading-tight">Zero waiting</p>
-          </div>
-        </div>
 
       </main>
 
