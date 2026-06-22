@@ -25,7 +25,7 @@ export default function Home() {
   const [screen, setScreen] = useState<Screen>(() => {
     if (typeof window !== 'undefined') {
       const count = parseInt(localStorage.getItem('resumeSync_runCount') ?? '0', 10);
-      if (count >= 3) return 'limit-reached';
+      if (count >= 2) return 'limit-reached';
     }
     return 'start';
   });
@@ -186,8 +186,17 @@ export default function Home() {
             </div>
             <h2 className="text-headline-lg-mobile font-bold text-on-background">Demo limit reached</h2>
             <p className="text-body-lg text-on-surface-variant max-w-xs leading-relaxed">
-              {"You've used your 3 free runs on this demo. Thanks for trying it out."}
+              {"You've used your 2 free demo runs. To keep going, grab the code on GitHub and run it locally with your own Anthropic API key — it takes about 10 minutes to set up."}
             </p>
+            <a
+              href="https://github.com/juhisharma-lang/JDResumeCustomizer"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-3 bg-primary text-on-primary rounded-xl font-semibold text-body-md shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform"
+            >
+              <span className="material-symbols-outlined text-xl leading-none">open_in_new</span>
+              View on GitHub
+            </a>
             <p className="text-body-md text-on-surface-variant/70 max-w-xs leading-relaxed">
               {"Found this useful? I'd love to hear what worked and what didn't. Reach out on LinkedIn and let's talk about it."}
             </p>

@@ -63,6 +63,18 @@ export default function StartScreen({ onContinue }: Props) {
 
       {/* Fixed bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50 px-4 py-4 bg-white/60 backdrop-blur-lg">
+        <p className="text-center mb-3 text-label-sm text-on-surface-variant/80 leading-snug">
+          This demo supports 2 free runs per browser. After that,{' '}
+          <a
+            href="https://github.com/juhisharma-lang/JDResumeCustomizer"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline"
+          >
+            grab the code on GitHub
+          </a>{' '}
+          and run it locally with your own Anthropic API key.
+        </p>
         <button
           onClick={onContinue}
           className="w-full h-14 bg-primary text-on-primary rounded-xl font-semibold text-body-md flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform"
